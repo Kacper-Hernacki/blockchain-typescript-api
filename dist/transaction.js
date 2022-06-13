@@ -1,5 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const TRANSACTION_FEE = require("./config");
+const ChainUtil = require("./chainUtill");
 class Transaction {
     constructor() {
         this.id = ChainUtil.id();
@@ -22,6 +24,7 @@ class Transaction {
             amount: amount - TRANSACTION_FEE,
             fee: TRANSACTION_FEE,
         };
+        Transaction.signTransaction(transaction, senderWallet);
         return transaction;
     }
     static signTransaction(transaction, senderWallet) {

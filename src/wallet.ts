@@ -1,11 +1,16 @@
 const EDDSA = require("elliptic").eddsa;
 const eddsa = new EDDSA("ed25519");
 const ChainUtil = require("./chainUtill");
+const INITIAL_BALANCE = require("./config");
+const Transaction = require("./transaction");
 
 interface WalletInterface {
   balance: number;
   keyPair: any;
   publicKey: string;
+  secret: any;
+  toString(): string;
+  sign(arg: any): any;
   createTransaction(
     to: string,
     amount: number,
@@ -19,6 +24,7 @@ class Wallet implements WalletInterface {
   balance: number;
   keyPair: any;
   publicKey: string;
+  secret: any;
 
   constructor(secret: any) {
     this.balance = INITIAL_BALANCE;
@@ -48,3 +54,5 @@ class Wallet implements WalletInterface {
     return transaction;
   }
 }
+
+module.exports = Wallet;

@@ -1,4 +1,6 @@
 export {};
+const TRANSACTION_FEE = require("./config");
+const ChainUtil = require("./chainUtill");
 
 class Transaction {
   id: number;
@@ -40,6 +42,7 @@ class Transaction {
       amount: amount - TRANSACTION_FEE,
       fee: TRANSACTION_FEE,
     };
+    Transaction.signTransaction(transaction, senderWallet);
     return transaction;
   }
 

@@ -1,6 +1,8 @@
 export {};
-//const uuidV1 = require("uuid/v1");
+const uuid = require("uuid");
 const SHA256 = require("crypto-js/sha256");
+const EDDSA = require("elliptic").eddsa;
+const eddsa = new EDDSA("ed25519");
 
 class ChainUtil {
   static genKeyPair(secret: any) {
@@ -8,7 +10,7 @@ class ChainUtil {
   }
 
   static id() {
-    return true; //uuidV1();
+    return uuid.v1();
   }
 
   static hash(data: any) {

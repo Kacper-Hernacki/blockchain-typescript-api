@@ -2,6 +2,8 @@
 const EDDSA = require("elliptic").eddsa;
 const eddsa = new EDDSA("ed25519");
 const ChainUtil = require("./chainUtill");
+const INITIAL_BALANCE = require("./config");
+const Transaction = require("./transaction");
 class Wallet {
     constructor(secret) {
         this.balance = INITIAL_BALANCE;
@@ -22,3 +24,4 @@ class Wallet {
         return transaction;
     }
 }
+module.exports = Wallet;
