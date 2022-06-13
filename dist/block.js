@@ -21,7 +21,7 @@ class Block {
         Signature : ${this.signature}`;
     }
     static genesis() {
-        return new this(`genesis time`, [], "genesis-hash", "", 1, "", "");
+        return new this(`genesis time`, [`genesis block`], "genesis block", this.hash(`genesis time`, "", []), 1, "genesis block", "genesis block");
     }
     static hash(timestamp, lastHash, data) {
         return SHA256(`${timestamp}${lastHash}${data}`).toString();

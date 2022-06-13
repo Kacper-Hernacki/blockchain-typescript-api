@@ -6,6 +6,13 @@ interface WalletInterface {
   balance: number;
   keyPair: any;
   publicKey: string;
+  createTransaction(
+    to: string,
+    amount: number,
+    type: any,
+    blockchain: any,
+    transactionPool: any
+  ): any;
 }
 
 class Wallet implements WalletInterface {
@@ -14,7 +21,7 @@ class Wallet implements WalletInterface {
   publicKey: string;
 
   constructor(secret: any) {
-    this.balance = 0;
+    this.balance = INITIAL_BALANCE;
     this.keyPair = ChainUtil.genKeyPair(secret);
     this.publicKey = this.keyPair.getPublic("hex");
   }
@@ -27,5 +34,17 @@ class Wallet implements WalletInterface {
 
   sign(dataHash: any) {
     return this.keyPair.sign(dataHash);
+  }
+
+  createTransaction(
+    to: string,
+    amount: number,
+    type: any,
+    blockchain: any,
+    transactionPool: any
+  ) {
+    let transaction = Transaction.newTransaction(this, to, amount, type);
+    transactionPool.addTransaction(transaction);
+    return transaction;
   }
 }

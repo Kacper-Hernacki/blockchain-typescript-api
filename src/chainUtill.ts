@@ -1,5 +1,5 @@
 export {};
-const uuidV1 = require("uuid/v1");
+//const uuidV1 = require("uuid/v1");
 const SHA256 = require("crypto-js/sha256");
 
 class ChainUtil {
@@ -8,7 +8,7 @@ class ChainUtil {
   }
 
   static id() {
-    return uuidV1();
+    return true; //uuidV1();
   }
 
   static hash(data: any) {
