@@ -1,61 +1,95 @@
-import express, { Request, Response } from "express";
-const bodyParser = require("body-parser");
-const Blockchain = require("./blockchain");
-const Wallet = require("./wallet");
-const TransactionPool = require("./transaction-pool");
+import express, { Request, Response } from 'express';
+import http from 'http';
+import bodyParser from 'body-parser';
+import logging from './config/logging';
+import config from './config/config';
+// import { Blockchain } from './blockchain';
+// import { Wallet } from './wallet';
+// import { TransactionPool } from './transaction-pool';
+import sampleRoutes from './routes/sample';
 
-//get the port from the user or set the default port
-const HTTP_PORT = process.env.HTTP_PORT || 3001;
+const NAMESPACE = 'Server';
 
 //create a new app
 const app = express();
 
-//using the blody parser middleware
+//logging the request
+app.use((req, res, next) => {
+    logging.info(NAMESPACE, `METHOD - [${req.method}], URL - [${req.url}], IP -[${req.socket.remoteAddress}]`);
+
+    res.on(`finish`, () => {
+        logging.info(NAMESPACE, `METHOD - [${req.method}], URL - [${req.url}], IP - [${req.socket.remoteAddress}], STATUS - [${res.statusCode}]`);
+    });
+    next();
+});
+
+// parse the request
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+// rules of API
+app.use((req, res, next) => {
+    // remove in production
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Origin', 'Origin, X-Requested-With, Content-Type, Accept,Authorization');
+
+    if (req.method == 'OPTIONS') {
+        res.header('Access-Control-Allow-Methods', 'GET PATCH DELETE POST PUT');
+        return res.status(200).json({});
+    }
+
+    next();
+});
+
+/** Routes go here */
+
 // create a new blockchain instance
-const blockchain = new Blockchain();
+// const blockchain = new Blockchain();
 
-// create a new wallet
-const wallet = new Wallet(Date.now().toString());
+// // create a new wallet
+// const wallet = new Wallet(Date.now().toString());
 
-const transactionPool = new TransactionPool();
+// const transactionPool = new TransactionPool([]);
 
-//EXPOSED APIs
+// //EXPOSED APIs
 
-//api to get the blocks
-app.get("/blocks", (req: Request, res: Response) => {
-  res.json(blockchain.chain);
+// //api to get the blocks
+// app.get('/blocks', (req: Request, res: Response) => {
+//     res.json(blockchain.chain);
+// });
+
+// // api to view transaction in the transaction pool
+// app.get('/transactions', (req: Request, res: Response) => {
+//     res.json(transactionPool.transactions);
+// });
+
+// //api to add blocks
+// app.post('/mine', (req: Request, res: Response) => {
+//     const block = blockchain.addBlock(req.body.data);
+//     console.log(`New block added: ${block.toString()}`);
+
+//     res.redirect('/blocks');
+// });
+
+// // create transactions
+// app.post('/transact', (req: Request, res: Response) => {
+//     const { to, amount, type } = req.body;
+//     console.log(req.body);
+//     const transaction = wallet.createTransaction(to, amount, type, blockchain, transactionPool);
+//     res.redirect('/transactions');
+// });
+
+app.use('/sample', sampleRoutes);
+
+/** Error handling */
+app.use((req, res, next) => {
+    const error = new Error('Not found');
+
+    res.status(404).json({
+        message: error.message
+    });
 });
 
-// api to view transaction in the transaction pool
-app.get("/transactions", (req: Request, res: Response) => {
-  res.json(transactionPool.transactions);
-});
+const httpServer = http.createServer(app);
 
-//api to add blocks
-app.post("/mine", (req: Request, res: Response) => {
-  const block = blockchain.addBlock(req.body.data);
-  console.log(`New block added: ${block.toString()}`);
-
-  res.redirect("/blocks");
-});
-
-// app server configurations
-app.listen(HTTP_PORT, () => {
-  console.log(`listening on port ${HTTP_PORT}`);
-});
-
-// create transactions
-app.post("/transact", (req: Request, res: Response) => {
-  const { to, amount, type } = req.body;
-  console.log(req.body);
-  const transaction = wallet.createTransaction(
-    to,
-    amount,
-    type,
-    blockchain,
-    transactionPool
-  );
-  res.redirect("/transactions");
-});
+httpServer.listen(config.server.port, () => logging.info(NAMESPACE, `Server is running ${config.server.hostname}:${config.server.port}`));
