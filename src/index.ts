@@ -3,10 +3,12 @@ import http from 'http';
 import bodyParser from 'body-parser';
 import logging from './config/logging';
 import config from './config/config';
-// import { Blockchain } from './blockchain';
-// import { Wallet } from './wallet';
-// import { TransactionPool } from './transaction-pool';
-import sampleRoutes from './routes/sample';
+import routes from './routes';
+
+// Blockchain data
+import { Blockchain } from './blockchain';
+import { Wallet } from './wallet';
+import { TransactionPool } from './transaction-pool';
 
 const NAMESPACE = 'Server';
 
@@ -41,22 +43,15 @@ app.use((req, res, next) => {
     next();
 });
 
-/** Routes go here */
-
 // create a new blockchain instance
-// const blockchain = new Blockchain();
+const blockchain = new Blockchain();
 
-// // create a new wallet
-// const wallet = new Wallet(Date.now().toString());
+// create a new wallet
+const wallet = new Wallet(Date.now().toString());
+const transactionPool = new TransactionPool([]);
 
-// const transactionPool = new TransactionPool([]);
-
-// //EXPOSED APIs
-
-// //api to get the blocks
-// app.get('/blocks', (req: Request, res: Response) => {
-//     res.json(blockchain.chain);
-// });
+// Routes
+app.use('/api', routes);
 
 // // api to view transaction in the transaction pool
 // app.get('/transactions', (req: Request, res: Response) => {
@@ -79,9 +74,7 @@ app.use((req, res, next) => {
 //     res.redirect('/transactions');
 // });
 
-app.use('/sample', sampleRoutes);
-
-/** Error handling */
+/* Error handling */
 app.use((req, res, next) => {
     const error = new Error('Not found');
 

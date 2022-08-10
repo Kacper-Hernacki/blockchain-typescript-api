@@ -1,27 +1,8 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const SHA256 = require('crypto-js/sha256');
-export {};
-// Block
-interface BlockInterface {
-    timestamp: string;
-    transactions: Array<any>;
-    previousHash: string;
-    hash: string;
-    nonce: number;
-    validator: string;
-    signature: string;
-    toString(): string;
-}
-
-class Block implements BlockInterface {
-    timestamp: string;
-    transactions: Array<any>;
-    previousHash: string;
-    hash: string;
-    nonce: number;
-    validator: string;
-    signature: string;
-
-    constructor(timestamp: string, transactions: Array<any>, previousHash: string, hash: string, nonce: number, validator: string, signature: string) {
+class Block {
+    constructor(timestamp, transactions, previousHash, hash, nonce, validator, signature) {
         this.timestamp = timestamp;
         this.transactions = transactions;
         this.previousHash = previousHash;
@@ -30,7 +11,6 @@ class Block implements BlockInterface {
         this.validator = validator;
         this.signature = signature;
     }
-
     toString() {
         return `Block - 
         Timestamp : ${this.timestamp}
@@ -40,28 +20,22 @@ class Block implements BlockInterface {
         Validator : ${this.validator}
         Signature : ${this.signature}`;
     }
-
     static genesis() {
         return new this(`genesis time`, [`genesis block`], 'genesis block', this.hash(`genesis time`, '', []), 1, 'genesis block', 'genesis block');
     }
-
-    static hash(timestamp: string, lastHash: string, data: Array<any>) {
+    static hash(timestamp, lastHash, data) {
         return SHA256(`${timestamp}${lastHash}${data}`).toString();
     }
-
-    static createBlock(lastBlock: any, data: Array<any>) {
+    static createBlock(lastBlock, data) {
         let hash;
         const timestamp = Date.now().toString();
         const lastHash = lastBlock.hash;
         hash = Block.hash(timestamp, lastHash, data);
-
         return new this(timestamp, [], lastHash, hash, 1, '', '');
     }
-
-    static blockHash(block: any) {
+    static blockHash(block) {
         const { timestamp, lastHash, data } = block;
         return Block.hash(timestamp, lastHash, data);
     }
 }
-
 module.exports = Block;
