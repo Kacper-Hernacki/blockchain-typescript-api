@@ -1,8 +1,7 @@
 export {};
 const EDDSA = require('elliptic').eddsa;
-const eddsa = new EDDSA('ed25519');
 const ChainUtil = require('./chainUtill');
-const INITIAL_BALANCE = require('./config');
+const { INITIAL_BALANCE, TRANSACTION_FEE } = require('./config');
 const Transaction = require('./transaction');
 
 interface WalletInterface {

@@ -1,5 +1,5 @@
 export {};
-const TRANSACTION_FEE = require('./config');
+const { INITIAL_BALANCE, TRANSACTION_FEE } = require('./config');
 const ChainUtil = require('./chainUtill');
 
 class Transaction {
@@ -26,12 +26,14 @@ class Transaction {
 
     static generateTransaction(senderWallet: any, to: string, amount: number, type: any) {
         const transaction = new this();
+
         transaction.type = type;
         transaction.output = {
             to: to,
             amount: amount - TRANSACTION_FEE,
             fee: TRANSACTION_FEE
         };
+
         Transaction.signTransaction(transaction, senderWallet);
         return transaction;
     }
