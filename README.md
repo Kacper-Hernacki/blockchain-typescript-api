@@ -36,6 +36,8 @@ npm start
 
 ## Testing api
 
+Try below endpoints in tool like postman or thunder client, to know how it works.
+
 Code includes endpoints such as:
 
 -   with GET method:
