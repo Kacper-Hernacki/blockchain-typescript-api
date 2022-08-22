@@ -1,4 +1,5 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
+import cors from 'cors';
 import http from 'http';
 import bodyParser from 'body-parser';
 import logging from './config/logging';
@@ -9,6 +10,21 @@ const NAMESPACE = 'Server';
 
 //create a new app
 const app = express();
+
+//get router
+var router = express.Router();
+
+//options for cors midddleware
+const options: cors.CorsOptions = {
+    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'X-Access-Token'],
+    credentials: true,
+    methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
+    origin: `http://${config.server}/`,
+    preflightContinue: false
+};
+
+//use cors middleware
+router.use(cors(options));
 
 //logging the request
 app.use((req, res, next) => {
@@ -26,10 +42,6 @@ app.use(bodyParser.json());
 
 // rules of API
 app.use((req, res, next) => {
-    // remove in production
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Origin', 'Origin, X-Requested-With, Content-Type, Accept,Authorization');
-
     if (req.method == 'OPTIONS') {
         res.header('Access-Control-Allow-Methods', 'GET PATCH DELETE POST PUT');
         return res.status(200).json({});
