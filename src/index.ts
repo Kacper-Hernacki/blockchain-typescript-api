@@ -42,6 +42,9 @@ app.use(bodyParser.json());
 
 // rules of API
 app.use((req, res, next) => {
+    // remove in production
+    res.header('Access-Control-Allow-Origin', '*');
+
     if (req.method == 'OPTIONS') {
         res.header('Access-Control-Allow-Methods', 'GET PATCH DELETE POST PUT');
         return res.status(200).json({});
