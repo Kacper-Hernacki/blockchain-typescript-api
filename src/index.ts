@@ -11,20 +11,13 @@ const NAMESPACE = 'Server';
 //create a new app
 const app = express();
 
-//get router
-var router = express.Router();
-
-//options for cors midddleware
-const options: cors.CorsOptions = {
-    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'X-Access-Token'],
-    credentials: true,
-    methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
-    origin: `http://${config.server}/`,
-    preflightContinue: false
-};
-
 //use cors middleware
-router.use(cors(options));
+app.use(
+    cors({
+        origin: '*',
+        methods: ['GET', 'POST', 'PUT']
+    })
+);
 
 //logging the request
 app.use((req, res, next) => {
