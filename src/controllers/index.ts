@@ -8,6 +8,7 @@ const blockchain = new Blockchain();
 
 // create a new wallet
 const wallet = new Wallet(Date.now().toString());
+
 const transactionPool = new TransactionPool([]);
 
 const serverHealthCheck = (req: Request, res: Response, next: NextFunction) => {
@@ -20,8 +21,12 @@ const blocksStatus = (req: Request, res: Response, next: NextFunction) => {
     return res.status(200).json(blockchain.chain);
 };
 
+const getWallet = (req: Request, res: Response, next: NextFunction) => {
+    return res.status(200).json({ publicKey: wallet.publicKey, privateKey: wallet.privateKey, balance: wallet.balance });
+};
+
 const transactionsStatus = (req: Request, res: Response, next: NextFunction) => {
-    return res.status(200).json(transactionPool.transactions);
+    return res.status(200).json(transactionPool);
 };
 
 const createTransaction = (req: Request, res: Response, next: NextFunction) => {
@@ -29,7 +34,10 @@ const createTransaction = (req: Request, res: Response, next: NextFunction) => {
 
     const transaction = wallet.createTransaction(to, amount, type, blockchain, transactionPool);
 
-    return res.status(200).json({ transaction: transaction.output });
+    const block = blockchain.addBlock(req.body.data);
+    console.log(`New block added: ${block.toString()}`);
+
+    return res.status(200).json({ block: block, transaction: transaction.output });
 };
 
 const mineBlock = (req: Request, res: Response, next: NextFunction) => {
@@ -38,4 +46,4 @@ const mineBlock = (req: Request, res: Response, next: NextFunction) => {
     return res.status(200).json({ data: block });
 };
 
-export default { serverHealthCheck, blocksStatus, transactionsStatus, createTransaction, mineBlock };
+export default { getWallet, serverHealthCheck, blocksStatus, transactionsStatus, createTransaction, mineBlock };

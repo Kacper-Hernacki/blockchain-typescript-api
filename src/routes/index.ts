@@ -6,6 +6,7 @@ const router = express.Router();
 router.get('/check', controller.serverHealthCheck);
 router.get('/blocks', controller.blocksStatus);
 router.get('/transactions', controller.transactionsStatus);
+router.get('/wallet', controller.getWallet);
 router.post('/transact', controller.createTransaction);
 router.post('/mine', controller.mineBlock);
 

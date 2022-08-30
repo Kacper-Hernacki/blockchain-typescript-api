@@ -18,12 +18,14 @@ export class Wallet implements WalletInterface {
     balance: number;
     keyPair: any;
     publicKey: string;
+    privateKey: string;
     secret: any;
 
     constructor(secret: any) {
         this.balance = INITIAL_BALANCE;
         this.keyPair = ChainUtil.genKeyPair(secret);
         this.publicKey = this.keyPair.getPublic('hex');
+        this.privateKey = this.keyPair.getSecret('hex');
     }
 
     toString() {
