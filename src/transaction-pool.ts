@@ -14,7 +14,8 @@ export class TransactionPool implements TransactionPoolInterface {
     }
 
     addTransaction(transaction: any) {
-        this.transactions.push(transaction);
+        const serializedTransaction = { id: transaction?.id, type: transaction?.type, input: transaction?.input, output: transaction?.output };
+        this.transactions.push(serializedTransaction);
     }
 
     validTransactions() {
