@@ -13,11 +13,15 @@ export class WalletsPool implements WalletsPoolInterface {
     }
 
     addWallet(wallet: any) {
-        const serializedWallet = { publicKey: wallet?.publicKey, privateKey: wallet?.privateKey, balance: wallet?.balance };
+        const serializedWallet = { publicKey: wallet?.publicKey, privateKey: wallet?.privateKey, balance: wallet?.balance, secret: wallet?.secret };
         this.wallets.push(serializedWallet);
     }
 
     getWalletByPrivateKey(privateKey: string) {
         return this.wallets.find((wallet) => wallet.privateKey === privateKey);
+    }
+
+    getWalletByPublicKey(publicKey: string) {
+        return this.wallets.find((wallet) => wallet.publicKey === publicKey);
     }
 }

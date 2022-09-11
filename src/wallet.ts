@@ -26,6 +26,7 @@ export class Wallet implements WalletInterface {
         this.keyPair = ChainUtil.genKeyPair(secret);
         this.publicKey = this.keyPair.getPublic('hex');
         this.privateKey = this.keyPair.getSecret('hex');
+        this.secret = secret;
     }
 
     toString() {

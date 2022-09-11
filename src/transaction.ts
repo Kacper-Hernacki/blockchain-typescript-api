@@ -2,7 +2,7 @@ export {};
 const { INITIAL_BALANCE, TRANSACTION_FEE } = require('./config');
 const ChainUtil = require('./chainUtill');
 
-class Transaction {
+export class Transaction {
     id: number;
     type: any;
     input: any;
@@ -50,5 +50,3 @@ class Transaction {
         return ChainUtil.verifySignature(transaction.input.from, transaction.input.signature, ChainUtil.hash(transaction.output));
     }
 }
-
-module.exports = Transaction;

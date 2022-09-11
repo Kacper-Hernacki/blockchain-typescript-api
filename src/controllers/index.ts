@@ -3,7 +3,6 @@ import { Blockchain } from '../blockchain';
 import { Wallet } from '../wallet';
 import { TransactionPool } from '../transaction-pool';
 import { WalletsPool } from '../wallets-pool';
-import { parse, stringify, toJSON, fromJSON } from 'flatted';
 
 // create a new blockchain instance
 const blockchain = new Blockchain();
@@ -32,13 +31,20 @@ const getWalletByPrivateKey = (req: Request, res: Response, next: NextFunction) 
     return res.status(200).json(wallet);
 };
 
+const getWalletByPublicKey = (req: Request, res: Response, next: NextFunction) => {
+    const { publicKey } = req.params;
+
+    const wallet = walletsPool.getWalletByPublicKey(publicKey);
+    return res.status(200).json(wallet);
+};
+
 const getWalletsPool = (req: Request, res: Response, next: NextFunction) => {
     return res.status(200).json(walletsPool?.wallets);
 };
 
 const createWallet = (req: Request, res: Response, next: NextFunction) => {
     const wallet = new Wallet(Date.now().toString());
-    const serializedWallet = { publicKey: wallet?.publicKey, privateKey: wallet?.privateKey, balance: wallet?.balance };
+    const serializedWallet = { publicKey: wallet?.publicKey, privateKey: wallet?.privateKey, balance: wallet?.balance, secret: wallet?.secret };
     walletsPool.addWallet(serializedWallet);
     console.log(`New wallet added`, serializedWallet);
     return res.status(200).json(serializedWallet);
@@ -49,11 +55,15 @@ const transactionsStatus = (req: Request, res: Response, next: NextFunction) => 
 };
 
 const createTransaction = (req: Request, res: Response, next: NextFunction) => {
-    const { to, amount, type } = req.body;
+    const { to, amount, type, publicKey } = req.body;
     // getWallet
-    const wallet = new Wallet(Date.now().toString());
-    // Remove that
+    const senderWallet = walletsPool.getWalletByPublicKey(publicKey);
+    const wallet = new Wallet(senderWallet?.secret);
+
     const transaction = wallet.createTransaction(to, amount, type, blockchain, transactionPool);
+
+    console.log(transaction);
+
     transactionPool.addTransaction(transaction);
     const block = blockchain.addBlock(req.body.data);
     console.log(`New block added: ${block.toString()}`);
@@ -67,4 +77,4 @@ const mineBlock = (req: Request, res: Response, next: NextFunction) => {
     return res.status(200).json({ data: block });
 };
 
-export default { createWallet, getWallet, serverHealthCheck, blocksStatus, transactionsStatus, createTransaction, mineBlock, getWalletsPool, getWalletByPrivateKey };
+export default { createWallet, serverHealthCheck, getWallet, blocksStatus, transactionsStatus, createTransaction, mineBlock, getWalletsPool, getWalletByPrivateKey };
