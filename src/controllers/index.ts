@@ -62,8 +62,6 @@ const createTransaction = (req: Request, res: Response, next: NextFunction) => {
 
     const transaction = wallet.createTransaction(to, amount, type, blockchain, transactionPool);
 
-    console.log(transaction);
-
     transactionPool.addTransaction(transaction);
     const block = blockchain.addBlock(req.body.data);
     console.log(`New block added: ${block.toString()}`);
