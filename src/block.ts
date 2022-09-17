@@ -13,13 +13,13 @@ interface BlockInterface {
 }
 
 class Block implements BlockInterface {
-    timestamp: string;
-    transactions: Array<any>;
-    previousHash: string;
-    hash: string;
-    nonce: number;
-    validator: string;
-    signature: string;
+    timestamp;
+    transactions;
+    previousHash;
+    hash;
+    nonce;
+    validator;
+    signature;
 
     constructor(timestamp: string, transactions: Array<any>, previousHash: string, hash: string, nonce: number, validator: string, signature: string) {
         this.timestamp = timestamp;
