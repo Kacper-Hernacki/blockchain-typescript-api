@@ -5,11 +5,10 @@ interface BlockchainInterface {
     chain: any;
     addBlock(arg: any): any;
     isValidChain(arg: any): boolean;
-    replaceChain(arg: any): any;
 }
 
 export class Blockchain implements BlockchainInterface {
-    chain: any;
+    chain;
     constructor() {
         this.chain = [Block.genesis()];
     }
@@ -32,18 +31,5 @@ export class Blockchain implements BlockchainInterface {
         }
 
         return true;
-    }
-
-    replaceChain(newChain: any) {
-        if (newChain.length <= this.chain.length) {
-            console.log('Recieved chain is not longer than the current chain');
-            return;
-        } else if (!this.isValidChain(newChain)) {
-            console.log('Recieved chain is invalid');
-            return;
-        }
-
-        console.log('Replacing the current chain with new chain');
-        this.chain = newChain;
     }
 }
